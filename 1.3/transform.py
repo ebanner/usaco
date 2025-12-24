@@ -24,9 +24,9 @@ def rot180(A):
 
 
 def rot270(A):
-    A_rot = rot90(A)
-    A_rot_rot = rot90(A_rot)
-    return A_rot_rot
+    A_rot_rot = rot180(A)
+    A_rot_rot_rot = rot90(A_rot_rot)
+    return A_rot_rot_rot
 
 
 if __name__ == '__main__':
