@@ -9,7 +9,6 @@ def rot90(A):
 
     J = range(m-1, -1, -1)
     I = range(n)
-
     for k in range(n):
         for j, i in zip(J, I):
             A_rot[i][k] = A[k][j]
@@ -27,6 +26,19 @@ def rot270(A):
     A_rot_rot = rot180(A)
     A_rot_rot_rot = rot90(A_rot_rot)
     return A_rot_rot_rot
+
+
+def reflect(A):
+    n, m = len(A), len(A[0])
+
+    def swap_col(j):
+        for i in range(n):
+            A[i][j], A[i][m-1-j] = A[i][m-1-j], A[i][j]
+
+    for j in range(m // 2):
+        swap_col(j)
+
+    return A
 
 
 if __name__ == '__main__':
