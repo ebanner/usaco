@@ -11,41 +11,42 @@ def get_dial_size():
     return dial_size
 
 
-def get_combinations():
+def get_passcodes():
     with open('combo.in', 'r') as f:
         f.readline()
         fj_passcode = map(int, f.readline().strip().split())
         master_passcode = map(int, f.readline().strip().split())
-    return list(fj_passcode), list(master_passcode)
+    return tuple(fj_passcode), tuple(master_passcode)
 
 
-def opens(c1, c2, N):
-    def dist(i, j):
-        d = abs(i-j)
-        return min(d, N-d)
+DELTAS = (-2, -1, 0, 1, 2)
 
-    for i, j in zip(c1, c2):
-        if not dist(i, j) <= 2:
-            return False
+def get_combos(combo, dial_size):
+    combo = map(lambda x: x-1, combo)
+    combo = tuple(combo)
 
-    return True
+    combos = set()
+    for di in DELTAS:
+        for dj in DELTAS:
+            for dk in DELTAS:
+                combo_ = (x+y for x, y in zip((di, dj, dk), combo))
+                combo_ = map(lambda x: x%dial_size, combo_)
+                combo_ = map(lambda x: x+1, combo_)
+                combo_ = tuple(combo_)
+                combos.add(combo_)
+
+    return combos
 
 
 if __name__ == '__main__':
     dial_size = get_dial_size()
-    fj_passcode, master_passcode = get_combinations()
+    fj_passcode, master_passcode = get_passcodes()
 
-    num_settings = 0
-    for i in range(1, dial_size+1):
-        for j in range(1, dial_size+1):
-            for k in range(1, dial_size+1):
-                combo = (i, j, k)
-                if opens(combo, fj_passcode, dial_size) and opens(combo, master_passcode, dial_size):
-                    num_settings += 1
-                elif opens(combo, fj_passcode, dial_size):
-                    num_settings += 1
-                elif opens(combo, master_passcode, dial_size):
-                    num_settings += 1
+    combos = \
+        get_combos(fj_passcode, dial_size) | \
+        get_combos(master_passcode, dial_size)
+
+    num_combos = len(combos)
 
     with open('combo.out', 'w') as f:
-        f.write(str(num_settings) + '\n')
+        f.write(str(num_combos) + '\n')
